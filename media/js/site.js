@@ -34,38 +34,34 @@
       if (!code || pre.querySelector('.copy-button')) return;
 
       var button = document.createElement('button');
-      var label = document.createElement('span');
       var timer;
 
+      // 纯图标按钮：状态只靠图标和颜色表达，文字交给 aria-label / title
       button.type = 'button';
       button.className = 'copy-button';
       button.setAttribute('aria-label', '复制这段代码');
-      label.className = 'copy-label';
-      label.textContent = '复制';
+      button.title = '复制';
       button.innerHTML = ICON.copy;
-      button.appendChild(label);
 
-      function settle(state, icon, text, announce) {
+      function settle(state, icon, announce) {
         button.dataset.state = state;
         button.innerHTML = icon;
-        label.textContent = text;
-        button.appendChild(label);
         button.setAttribute('aria-label', announce);
+        button.title = announce;
         clearTimeout(timer);
         timer = setTimeout(function () {
           delete button.dataset.state;
           button.innerHTML = ICON.copy;
-          label.textContent = '复制';
-          button.appendChild(label);
           button.setAttribute('aria-label', '复制这段代码');
+          button.title = '复制';
         }, 2000);
       }
 
       button.addEventListener('click', function () {
         navigator.clipboard.writeText(code.textContent).then(function () {
-          settle('done', ICON.check, '已复制', '已复制到剪贴板');
+          settle('done', ICON.check, '已复制到剪贴板');
         }, function () {
-          settle('failed', ICON.alert, '失败', '复制失败，请手动选择');
+          settle('failed', ICON.alert, '复制失败，请手动选择');
         });
       });
 
